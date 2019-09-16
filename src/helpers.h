@@ -4,6 +4,7 @@
 #include <math.h>
 #include <string>
 #include <vector>
+#include "json.hpp"
 
 // for convenience
 using std::string;
@@ -153,5 +154,24 @@ vector<double> getXY(double s, double d, const vector<double> &maps_s,
 
   return {x,y};
 }
+
+// Checking if a car is in a perticular lane
+bool is_in_lane(double d, int lane, double width)
+{
+	return (d > width * lane) && (d < width * lane + width);
+}
+
+// struct to store data
+struct SensorData 
+{
+	double vx, vy, s, d, speed;
+	SensorData(nlohmann::json sensor_fusion) : vx(sensor_fusion[3]),
+		vy(sensor_fusion[4]),
+		s(sensor_fusion[5]),
+		d(sensor_fusion[6])
+	{
+		speed = sqrt(vx * vx + vy * vy);
+	}
+};
 
 #endif  // HELPERS_H
